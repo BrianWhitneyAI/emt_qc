@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Top-level package for emt_qc."""
-
 __author__ = "Brian Whitney"
 __email__ = "brian.whitney@alleninstitute.org"
 # Do not edit this string manually, always use bumpversion
@@ -13,6 +9,6 @@ def get_module_version():
     return __version__
 
 
-from .example import Example  # noqa: F401
-from emt_block_duration import emt_block_duration
+from .emt_block_duration import emt_block_duration
+from .emt_block_duration import emt_block_qc_run_all
 

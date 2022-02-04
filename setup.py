@@ -10,6 +10,9 @@ with open("README.md") as readme_file:
 
 setup_requirements = [
     "pytest-runner>=5.2",
+    "aicspylibczi>= 1.0",
+    "lxml>=1.0",
+    "pandas>=1.0"
 ]
 
 test_requirements = [
