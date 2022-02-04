@@ -1,0 +1,29 @@
+emt\_qc package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   emt_qc.bin
+
+Submodules
+----------
+
+emt\_qc.example module
+----------------------
+
+.. automodule:: emt_qc.example
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: emt_qc
+   :members:
+   :undoc-members:
+   :show-inheritance:

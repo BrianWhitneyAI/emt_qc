@@ -1,0 +1,21 @@
+emt\_qc.bin package
+===================
+
+Submodules
+----------
+
+emt\_qc.bin.my\_example module
+------------------------------
+
+.. automodule:: emt_qc.bin.my_example
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: emt_qc.bin
+   :members:
+   :undoc-members:
+   :show-inheritance:
