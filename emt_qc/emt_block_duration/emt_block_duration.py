@@ -1,3 +1,4 @@
+from msilib.schema import Directory
 import aicspylibczi
 from lxml import etree
 import os
@@ -75,3 +76,19 @@ def emt_block_qc_run_all(reprocess = False):
         elif reprocess == False:
             emt_block_duration(f'{PROD_DIR}/{folder}')
             print(f'Completed: {folder}')
+
+
+def folder_name_fomatter(main_folder):
+    
+    if '.czi' in main_folder:
+        folder_no_suffix, f_ext = os.path.splitext(main_folder)
+        os.rename(main_folder, folder_no_suffix)
+        main_folder = folder_no_suffix
+        
+    while any([x in 'czi' for x in os.walk(main_folder)]):
+        for dirpath, dirnames, filenames in os.walk(main_folder):
+            for foldername in [f for f in dirnames if f.endswith('.czi')]:
+                folder_no_suffix, f_ext = os.path.splitext(foldername)
+                os.chdir(dirpath)
+                os.rename(foldername, folder_no_suffix)       
+        os.chdir(main_folder)
