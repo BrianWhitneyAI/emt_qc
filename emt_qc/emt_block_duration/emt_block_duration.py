@@ -92,3 +92,24 @@ def folder_name_fomatter(main_folder):
                 os.chdir(dirpath)
                 os.rename(foldername, folder_no_suffix)       
         os.chdir(main_folder)
+
+def concat_block_dur(dir_master):
+    
+    outputname = 'concatenated_block_duraiton.csv'
+    if os.path.exists(f'{dir_master}/{outputname}'):
+        df = pd.read_csv(f'{dir_master}/{outputname}')
+    else:
+        df = pd.DataFrame(columns=['Block', 'Full_datetime', 'Binning','Duration_single_Block','Duration_total','Experiment'])
+
+    for dirpath, dirnames, filenames in os.walk(dir_master):
+        for filename in [f for f in filenames if f.endswith('block_durations.csv')]:
+            experiment = os.path.basename(dirpath)
+            if not len(df[df['Experiment'] == experiment].index) == 7:
+                if not df[df['Experiment'] == experiment].empty:
+                    df = df[(df.Experiments == experiment)]
+                temp = pd.read_csv(filename)
+                temp['Experiment'] = experiment
+                temp.drop(columns = ['Unnamed: 0'])
+                df = pd.concat(df,temp)
+
+    df.to_csv(f'{dir_master}/{outputname}')

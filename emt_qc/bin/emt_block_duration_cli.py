@@ -1,10 +1,9 @@
 import argparse
+from datetime import datetime
 import logging
 import sys
 import traceback
 
-from datetime import datetime
-from logging import FileHandler, StreamHandler, Formatter
 from emt_qc.emt_block_duration.emt_block_duration import emt_block_qc_run_all
 
 
@@ -33,10 +32,10 @@ class Args(argparse.Namespace):
 ###############################################################################
 
 def configure_logging(debug: bool):
-    f = Formatter(fmt='[%(asctime)s][%(levelname)s] %(message)s')
-    streamHandler = StreamHandler()
+    f = logging.Formatter(fmt='[%(asctime)s][%(levelname)s] %(message)s')
+    streamHandler = logging.StreamHandler()
     streamHandler.setFormatter(f)
-    fileHandler = FileHandler(filename=f"fov_qc_cli_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.log", mode="w")
+    fileHandler = logging.FileHandler(filename=f"fov_qc_cli_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.log", mode="w")
     fileHandler.setFormatter(f)
     log = logging.getLogger() # root logger
     log.handlers = [streamHandler, fileHandler] # overwrite handlers

@@ -15,6 +15,8 @@ from typing import Any, Tuple
 
 # Relative
 
+from emt_block_duration import emt_block_duration
+
 ###############################################################################
 
 log = logging.getLogger(__name__)
