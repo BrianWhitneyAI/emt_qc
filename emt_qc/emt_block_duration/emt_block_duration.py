@@ -15,7 +15,7 @@ from datetime import datetime
 
 # Change directory where EMT czi files are located belows
 
-PROD_DIR = '/allen/aics/microscopy/PRODUCTION/PIPELINE_8_1'
+#PROD_DIR = '/allen/aics/microscopy/PRODUCTION/PIPELINE_8_1'
 
 
 # Runs emt block duration qc on a single experiment (directory on the isilon). Input is the path to the directory.
@@ -67,49 +67,49 @@ def emt_block_duration(block_exp_dir):
 
 
 # Runs all folders in the PROD_DIR with emt_block_duration qc
-def emt_block_qc_run_all(reprocess = False):
-    for folder in os.listdir(PROD_DIR):
+def emt_block_qc_run_all(dir, reprocess = False):
+
+    for folder in os.listdir(dir):
         if reprocess == True:
-            if exists(f'{PROD_DIR}/{folder}/block_durations.txt') or exists(f'{PROD_DIR}/block_durations.txt'):
+            if exists(f'{dir}/{folder}/block_durations.txt') or exists(f'{dir}/block_durations.txt'):
                 print(f'Already completed: {folder}')
                 continue
         elif reprocess == False:
-            emt_block_duration(f'{PROD_DIR}/{folder}')
+            emt_block_duration(f'{dir}/{folder}')
             print(f'Completed: {folder}')
 
 
 def folder_name_fomatter(main_folder):
-    
-    if '.czi' in main_folder:
-        folder_no_suffix, f_ext = os.path.splitext(main_folder)
-        os.rename(main_folder, folder_no_suffix)
-        main_folder = folder_no_suffix
         
-    while any([x in 'czi' for x in os.walk(main_folder)]):
-        for dirpath, dirnames, filenames in os.walk(main_folder):
+    while [dirname for (_, dirnames,_) in os.walk(main_folder) for dirname in dirnames if dirname.endswith('.czi')]:
+        for dirpath, dirnames, _ in os.walk(main_folder):
             for foldername in [f for f in dirnames if f.endswith('.czi')]:
-                folder_no_suffix, f_ext = os.path.splitext(foldername)
+                folder_no_suffix, _ = os.path.splitext(foldername)
                 os.chdir(dirpath)
                 os.rename(foldername, folder_no_suffix)       
         os.chdir(main_folder)
 
+
 def concat_block_dur(dir_master):
-    
+
     outputname = 'concatenated_block_duraiton.csv'
     if os.path.exists(f'{dir_master}/{outputname}'):
         df = pd.read_csv(f'{dir_master}/{outputname}')
     else:
-        df = pd.DataFrame(columns=['Block', 'Full_datetime', 'Binning','Duration_single_Block','Duration_total','Experiment'])
-
-    for dirpath, dirnames, filenames in os.walk(dir_master):
+        df = pd.DataFrame(columns=['Experiment','Block', 'Full_datetime', 'Binning','Duration_single_Block','Duration_total'])
+    for dirpath, _, filenames in os.walk(dir_master):
         for filename in [f for f in filenames if f.endswith('block_durations.csv')]:
             experiment = os.path.basename(dirpath)
             if not len(df[df['Experiment'] == experiment].index) == 7:
                 if not df[df['Experiment'] == experiment].empty:
                     df = df[(df.Experiments == experiment)]
-                temp = pd.read_csv(filename)
-                temp['Experiment'] = experiment
-                temp.drop(columns = ['Unnamed: 0'])
-                df = pd.concat(df,temp)
+                temp = pd.read_csv(f'{dirpath}/{filename}', index_col=0)
+                temp.insert(0,'Experiment', experiment)
+                df = df.append(temp, ignore_index = True)
+    df.to_csv(f'{dir_master}/{outputname}', index = False)
 
-    df.to_csv(f'{dir_master}/{outputname}')
+
+def run_all(dir):
+    folder_name_fomatter(dir)
+    emt_block_qc_run_all(dir)
+    concat_block_dur(dir)
