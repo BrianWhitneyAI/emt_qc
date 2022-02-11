@@ -82,7 +82,7 @@ def emt_block_qc_run_all(dir, reprocess = False):
 def folder_name_fomatter(main_folder):
         
     while [dirname for (_, dirnames,_) in os.walk(main_folder) for dirname in dirnames if dirname.endswith('.czi')]:
-        for dirpath, dirnames, _ in os.walk(main_folder):
+        for (dirpath, dirnames, _) in os.walk(main_folder):
             for foldername in [f for f in dirnames if f.endswith('.czi')]:
                 folder_no_suffix, _ = os.path.splitext(foldername)
                 os.chdir(dirpath)
@@ -97,7 +97,7 @@ def concat_block_dur(dir_master):
         df = pd.read_csv(f'{dir_master}/{outputname}')
     else:
         df = pd.DataFrame(columns=['Experiment','Block', 'Full_datetime', 'Binning','Duration_single_Block','Duration_total'])
-    for dirpath, _, filenames in os.walk(dir_master):
+    for (dirpath, _, filenames) in os.walk(dir_master):
         for filename in [f for f in filenames if f.endswith('block_durations.csv')]:
             experiment = os.path.basename(dirpath)
             if not len(df[df['Experiment'] == experiment].index) == 7:
@@ -109,7 +109,30 @@ def concat_block_dur(dir_master):
     df.to_csv(f'{dir_master}/{outputname}', index = False)
 
 
+def concat_max_min_dur(dir_master):
+
+    outputname = 'concatenated_MaxMin_block_duraiton.csv'
+    if os.path.exists(f'{dir_master}/{outputname}'):
+        df = pd.read_csv(f'{dir_master}/{outputname}')
+    else:
+        df = pd.DataFrame(columns=['Experiment','Max Block Duration', 'Max Block Number', 'Min Block Duration','Min Block Number'])
+    for dirpath, _, filenames in os.walk(dir_master):
+        for filename in [f for f in filenames if f.endswith('block_durations.csv')]:
+            experiment = os.path.basename(dirpath)
+            if df[df['Experiment'] == experiment].empty:
+                temp = pd.read_csv(f'{dirpath}/{filename}', index_col=0)
+                temp.Duration_single_Block = pd.to_timedelta(temp.Duration_single_Block)
+                rowdata = [experiment]
+                rowdata.append(temp.Duration_single_Block.max())
+                rowdata.append(temp[temp.Duration_single_Block == temp.Duration_single_Block.max()].Block.tolist())
+                rowdata.append(temp.Duration_single_Block.min())
+                rowdata.append(temp[temp.Duration_single_Block == temp.Duration_single_Block.min()].Block.tolist())
+                rowdata = pd.Series(rowdata, index = df.columns)
+                df = df.append(rowdata, ignore_index=True)
+    df.to_csv(f'{dir_master}/{outputname}', index = False)
+
 def run_all(dir):
     folder_name_fomatter(dir)
     emt_block_qc_run_all(dir)
-    concat_block_dur(dir)
+    # concat_block_dur(dir)
+    # concat_max_min_dur
