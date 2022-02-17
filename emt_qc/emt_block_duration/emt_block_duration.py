@@ -67,14 +67,14 @@ def emt_block_duration(block_exp_dir):
 
 
 # Runs all folders in the PROD_DIR with emt_block_duration qc
-def emt_block_qc_run_all(dir, reprocess = False):
+def emt_block_qc_run_all(dir, reprocess_all = False):
 
     for folder in os.listdir(dir):
-        if reprocess == True:
+        if reprocess_all == False:
             if exists(f'{dir}/{folder}/block_durations.txt') or exists(f'{dir}/block_durations.txt'):
                 print(f'Already completed: {folder}')
-                continue
-        elif reprocess == False:
+                continue # is this needed?
+        elif reprocess_all == True:
             emt_block_duration(f'{dir}/{folder}')
             print(f'Completed: {folder}')
 
