@@ -102,7 +102,7 @@ def concat_block_dur(dir_master):
             experiment = os.path.basename(dirpath)
             if not len(df[df['Experiment'] == experiment].index) == 7:
                 if not df[df['Experiment'] == experiment].empty:
-                    df = df[(df.Experiments == experiment)]
+                    df = df[(df.Experiment == experiment)]
                 temp = pd.read_csv(f'{dirpath}/{filename}', index_col=0)
                 temp.insert(0,'Experiment', experiment)
                 df = df.append(temp, ignore_index = True)
@@ -134,5 +134,5 @@ def concat_max_min_dur(dir_master):
 def run_all(dir):
     folder_name_fomatter(dir)
     emt_block_qc_run_all(dir)
-    # concat_block_dur(dir)
-    # concat_max_min_dur
+    concat_block_dur(dir)
+    concat_max_min_dur(dir)
