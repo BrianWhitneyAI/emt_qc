@@ -15,5 +15,5 @@ def get_module_version():
 
 from .example import Example  # noqa: F401
 from .emt_block_duration import emt_block_duration
-from .emt_block_duration import pipeline_tools
+from .alignment_tools import get_qc_daily_path
 
