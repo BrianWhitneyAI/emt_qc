@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from camera_alignment_core.align import Align
 from camera_alignment_core.constants import Magnification
 import os

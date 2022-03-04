@@ -4,8 +4,8 @@ from pathlib import Path
 def get_QC_daily_path(
     reference_directory: str, # use path to Argo_QC_daily
     system: str, # Options are ZSD0, ZSD1, ZSD2, ZSD3, 3i0, 3i1
-    objective: int,
-    date: int
+    objective: int, # Options are 100, 63, 20
+    date: int # Format is YYYYMMDD (e.g. 20220217)
 )-> Path:
     opt_cont_files = []
     for opt_dir in os.listdir(f'{reference_directory}/{system}'):
