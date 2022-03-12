@@ -4,11 +4,12 @@ import logging
 import sys
 import traceback
 
-from emt_qc.emt_block_duration.emt_block_duration import emt_block_qc_run_all
+from emt_qc.emt_block_duration.emt_block_duration import (
+    emt_block_qc_run_all,
+)
 
 
 class Args(argparse.Namespace):
-
     def __init__(self):
         super().__init__()
         # Arguments that could be passed in through the command line
@@ -17,30 +18,45 @@ class Args(argparse.Namespace):
 
         self.__parse()
 
-
     def __parse(self):
-        p = argparse.ArgumentParser(prog='EMT_Block_Duration_QC',
-                                    description='Generates a .csv and .txt file with the length of each experiment block '
-                                                'for all PIPELINE_8 folders on the isilon')
-        p.add_argument('--reprocess', action='store_true',
-                       help='Re-run QC on all PIPELINE_8 folders', 
-                       default=False, required=False)
-        p.add_argument('--debug', action='store_true', 
-                       help='Enable debug mode', 
-                       default=False, required=False)
-        
+        p = argparse.ArgumentParser(
+            prog="EMT_Block_Duration_QC",
+            description="Generates a .csv and .txt file with the length of each experiment block "
+            "for all PIPELINE_8 folders on the isilon",
+        )
+        p.add_argument(
+            "--reprocess",
+            action="store_true",
+            help="Re-run QC on all PIPELINE_8 folders",
+            default=False,
+            required=False,
+        )
+        p.add_argument(
+            "--debug",
+            action="store_true",
+            help="Enable debug mode",
+            default=False,
+            required=False,
+        )
+
+
 ###############################################################################
 
+
 def configure_logging(debug: bool):
-    f = logging.Formatter(fmt='[%(asctime)s][%(levelname)s] %(message)s')
+    f = logging.Formatter(fmt="[%(asctime)s][%(levelname)s] %(message)s")
     streamHandler = logging.StreamHandler()
     streamHandler.setFormatter(f)
-    fileHandler = logging.FileHandler(filename=f"fov_qc_cli_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.log", mode="w")
+    fileHandler = logging.FileHandler(
+        filename=f"fov_qc_cli_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.log",
+        mode="w",
+    )
     fileHandler.setFormatter(f)
-    log = logging.getLogger() # root logger
-    log.handlers = [streamHandler, fileHandler] # overwrite handlers
+    log = logging.getLogger()  # root logger
+    log.handlers = [streamHandler, fileHandler]  # overwrite handlers
     log.setLevel(logging.DEBUG if debug else logging.INFO)
-        
+
+
 def main():
     args = Args()
     debug = args.debug
@@ -66,5 +82,5 @@ def main():
 ###############################################################################
 # Allow caller to directly run this module (usually in development scenarios)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

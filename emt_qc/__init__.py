@@ -13,7 +13,8 @@ def get_module_version():
     return __version__
 
 
+from .emt_block_duration import (
+    emt_block_duration,
+    pipeline_tools,
+)
 from .example import Example  # noqa: F401
-from .emt_block_duration import emt_block_duration
-from .emt_block_duration import pipeline_tools
-
